@@ -38,7 +38,7 @@ jobs:
                   docker build -t ${{ secrets.AWS_REPOSITORY_URL }}:$GITHUB_REF_NAME-$GITHUB_SHA . 
                   docker push ${{ secrets.AWS_REPOSITORY_URL }}:$GITHUB_REF_NAME-$GITHUB_SHA
 
-                  git clone https://${{ secrets.AWS_GITHUB_USER }}:${{ secrets.AWS_GITHUB_TOKEN }}https://github.com/18april/k8s-nodejs-project.git
+                  git clone https://${{ secrets.AWS_GITHUB_USER }}:${{ secrets.AWS_GITHUB_TOKEN }}git@github.com:18april/k8s-nodejs-project.git
 
                   # List the contents of the cloned repository to find the correct directory
                   ls -la 18april/k8s-nodejs-project
