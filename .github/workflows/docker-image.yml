@@ -40,7 +40,11 @@ jobs:
 
                   git clone https://${{ secrets.AWS_GITHUB_USER }}:${{ secrets.AWS_GITHUB_TOKEN }}@github.com/18april/k8s-nodejs-project.git
 
-                  cd gitops-k8s
+                  # List the contents of the cloned repository to find the correct directory
+                  ls -la 18april/k8s-nodejs-project
+
+                  # Change to the appropriate directory if it exists
+                  cd 18april/k8s-nodejs-project/gitops-k8s || exit 1
 
                   git config user.name "kashyapvishal"
                   git config user.email "kashyapvishal0418@gmail.com"
