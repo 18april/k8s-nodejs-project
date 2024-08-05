@@ -6,6 +6,7 @@ on:
     push:
         branches:
             - master
+
 env:
     AWS_REPOSITORY_URL: ${{ secrets.AWS_REPOSITORY_URL }}
     GITHUB_TOKEN: ${{ secrets.AWS_GITHUB_TOKEN }}
@@ -15,36 +16,36 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-             - name: configure The IAM cred
-               uses: aws-actions/configure-aws-credentials@v1
-               with:
-                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                 aws-region: us-east-1
+            - name: Configure the IAM credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: us-east-1
 
-             - name: Login in to Amazon ECR
-               id: login-ecr
-               uses: aws-actions/amazon-ecr-login@v1  
-             
-             - uses: actions/checkout@v2
-             - name: SER ENV
-               run: echo "GITHUB_BRANCH=$(echo $GITHUB_REF_NAME-$GITHUB_SHA)" >> $GITHUB_ENV
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1  
 
-             - name: Build the Docker image
-               run: |
+            - uses: actions/checkout@v2
+
+            - name: Set ENV
+              run: echo "GITHUB_BRANCH=$(echo $GITHUB_REF_NAME-$GITHUB_SHA)" >> $GITHUB_ENV
+
+            - name: Build the Docker image
+              run: |
                   aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 542783570735.dkr.ecr.ap-south-1.amazonaws.com
-                  docker build -t ${{secrets.AWS_REPOSITORY_URL}}:$GITHUB_REF_NAME-$GITHUB_SHA . 
-                  docker push ${{secrets.AWS_REPOSITORY_URL}}:$GITHUB_REF_NAME-$GITHUB_SHA
+                  docker build -t ${{ secrets.AWS_REPOSITORY_URL }}:$GITHUB_REF_NAME-$GITHUB_SHA . 
+                  docker push ${{ secrets.AWS_REPOSITORY_URL }}:$GITHUB_REF_NAME-$GITHUB_SHA
 
-                  git clone https://${{secrets.AWS_GITHUB_USER}}:${{secrets.AWS_GITHUB_TOKEN}}git@github.com:18april/k8s-nodejs-project.git
-
+                  git clone https://${{ secrets.AWS_GITHUB_USER }}:${{ secrets.AWS_GITHUB_TOKEN }}@github.com/18april/k8s-nodejs-project.git
 
                   cd gitops-k8s
 
                   git config user.name "kashyapvishal"
                   git config user.email "kashyapvishal0418@gmail.com"
 
-                  yq e '.spec.template.spec.containers[0].image = "${{secrets.AWS_REPOSITORY_URL}}:${{ env.GITHUB_BRANCH }}" ' -i deployment.apps/nodejs.yaml
+                  yq e '.spec.template.spec.containers[0].image = "${{ secrets.AWS_REPOSITORY_URL }}:${{ env.GITHUB_BRANCH }}"' -i deployment.apps/nodejs.yaml
 
                   git add .
                   git commit -m "update the code"
