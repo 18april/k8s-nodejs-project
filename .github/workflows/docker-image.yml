@@ -40,7 +40,7 @@ jobs:
 
                   cd gitops-k8s
 
-                  git config user.name "18april"
+                  git config user.name "kashyapvishal"
                   git config user.email "kashyapvishal0418@gmail.com"
 
                   yq e '.spec.template.spec.containers[0].image = "${{secrets.AWS_REPOSITORY_URL}}:${{ env.GITHUB_BRANCH }}" ' -i deployment.apps/nodejs.yaml
